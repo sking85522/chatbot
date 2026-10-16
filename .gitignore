@@ -1,0 +1,22 @@
+# Environment and sensitive keys
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+update_log.txt
+
+# Temporary auto-update files
+temp_update/
+latest.zip
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Session storage
+storage/
+storage/sessions/

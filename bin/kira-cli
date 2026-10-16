@@ -1,0 +1,272 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Kira AI & Zilliz Vector DB - Interactive Command Line Interface (CLI)
+ *
+ * Usage:
+ *   php bin/kira-cli help
+ *   php bin/kira-cli stats
+ *   php bin/kira-cli query "Nike running shoes"
+ *   php bin/kira-cli scan "http://127.0.0.1:8080/public/index.html"
+ *   php bin/kira-cli clean
+ *   php bin/kira-cli create-page "Title" "Content"
+ *   php bin/kira-cli extract "https://example.com"
+ */
+
+require_once dirname(__DIR__) . '/config/config.php';
+require_once dirname(__DIR__) . '/src/ChatService.php';
+require_once dirname(__DIR__) . '/src/PageGenerator.php';
+require_once dirname(__DIR__) . '/src/WebNavigator.php';
+require_once dirname(__DIR__) . '/src/CloudFetcher.php';
+require_once dirname(__DIR__) . '/src/ProjectAuditor.php';
+require_once dirname(__DIR__) . '/vector/ZillizClient.php';
+require_once dirname(__DIR__) . '/vector/VectorSearch.php';
+require_once dirname(__DIR__) . '/vector/VectorInsert.php';
+require_once dirname(__DIR__) . '/vector/WebpageScanner.php';
+require_once dirname(__DIR__) . '/vector/StorageManager.php';
+
+// CLI Colors
+const C_RESET   = "\033[0m";
+const C_BOLD    = "\033[1m";
+const C_GREEN   = "\033[32m";
+const C_BLUE    = "\033[34m";
+const C_YELLOW  = "\033[33m";
+const C_RED     = "\033[31m";
+const C_CYAN    = "\033[36m";
+
+function output(string $msg, string $color = C_RESET): void {
+    echo $color . $msg . C_RESET . PHP_EOL;
+}
+
+function printHeader(): void {
+    output("==========================================================", C_CYAN);
+    output("⚡ Kira AI & Zilliz Cloud Vector DB - Smart CLI System ⚡", C_BOLD . C_CYAN);
+    output("==========================================================", C_CYAN);
+}
+
+$argv = $_SERVER['argv'] ?? [];
+$command = strtolower($argv[1] ?? 'help');
+$arg1 = $argv[2] ?? null;
+$arg2 = $argv[3] ?? null;
+$arg3 = $argv[4] ?? null;
+
+switch ($command) {
+    case 'stats':
+    case 'status':
+        printHeader();
+        output("Checking Vector Database & Storage Status...", C_YELLOW);
+        $storage = new StorageManager();
+        $stats = $storage->getStats();
+        output("Collection : " . ($stats['collection'] ?? ZILLIZ_COLLECTION), C_GREEN);
+        output("Entities   : " . ($stats['current_entity_count'] ?? 0), C_GREEN);
+        output("Storage    : " . ($stats['estimated_size_mb'] ?? 0) . " MB / " . ($stats['max_storage_gb'] ?? 5) . " GB (" . ($stats['usage_percent'] ?? 0) . "%)", C_GREEN);
+        output("Endpoint   : " . (parse_url(ZILLIZ_ENDPOINT, PHP_URL_HOST) ?: 'Configured'), C_CYAN);
+        break;
+
+    case 'query':
+    case 'search':
+        printHeader();
+        if (empty($arg1)) {
+            output("Error: Query text required. Example: php bin/kira-cli query \"Nike shoes\"", C_RED);
+            exit(1);
+        }
+        output("🔍 Searching Zilliz Vector DB for: \"{$arg1}\"...", C_YELLOW);
+        $search = new VectorSearch();
+        $results = $search->search($arg1, 5);
+        if (empty($results)) {
+            output("No matching records found in vector memory.", C_YELLOW);
+        } else {
+            output("Found " . count($results) . " matching vectors:\n", C_GREEN . C_BOLD);
+            foreach ($results as $i => $row) {
+                $score = round($row['distance'] ?? 0, 4);
+                $type = $row['type'] ?? 'unknown';
+                $text = substr($row['text'] ?? '', 0, 160) . '...';
+                output("[" . ($i + 1) . "] Score: {$score} | Type: {$type}", C_CYAN);
+                output("    {$text}\n");
+            }
+        }
+        break;
+
+    case 'scan':
+        printHeader();
+        if (empty($arg1)) {
+            output("Error: URL required. Example: php bin/kira-cli scan \"http://127.0.0.1:8080/public/index.html\"", C_RED);
+            exit(1);
+        }
+        output("🌐 Scanning and vectorizing webpage: {$arg1}...", C_YELLOW);
+        $scanner = new WebpageScanner();
+        $res = $scanner->scanAndIngest($arg1);
+        if ($res['success']) {
+            output("✅ Successfully scanned & indexed {$res['chunks_indexed']} knowledge chunks into Zilliz DB!", C_GREEN . C_BOLD);
+            output("Title: " . ($res['title'] ?? 'N/A'), C_CYAN);
+        } else {
+            output("❌ Scan failed: " . ($res['error'] ?? 'Unknown error'), C_RED);
+        }
+        break;
+
+    case 'create-page':
+        printHeader();
+        if (empty($arg1)) {
+            output("Error: Title required. Example: php bin/kira-cli create-page \"Product Comparison\" \"# Content here\"", C_RED);
+            exit(1);
+        }
+        $title = $arg1;
+        $content = $arg2 ?: "## {$title}\n\nGenerated via Kira CLI System.";
+        $category = $arg3 ?: 'general';
+
+        output("📄 Generating standalone webpage...", C_YELLOW);
+        $generator = new PageGenerator();
+        $page = $generator->generatePage($title, $content, $category);
+        output("✅ Webpage Created Successfully!", C_GREEN . C_BOLD);
+        output("Title   : {$page['title']}", C_CYAN);
+        output("URL     : {$page['web_url']}", C_GREEN);
+        output("File    : {$page['file_path']}", C_YELLOW);
+        break;
+
+    case 'extract':
+        printHeader();
+        if (empty($arg1)) {
+            output("Error: Target URL required. Example: php bin/kira-cli extract \"https://example.com\"", C_RED);
+            exit(1);
+        }
+        output("🕷️ Deep extracting content from: {$arg1}...", C_YELLOW);
+        $navigator = new WebNavigator();
+        $data = $navigator->extractContent($arg1);
+        if ($data['success']) {
+            output("Title: " . $data['title'], C_GREEN . C_BOLD);
+            output("Headings: " . implode(" | ", $data['headings']), C_CYAN);
+            output("\nSummary Extracted:\n" . substr($data['content_sample'], 0, 400) . "...\n", C_RESET);
+        } else {
+            output("Extraction failed: " . ($data['error'] ?? 'Unknown'), C_RED);
+        }
+        break;
+
+    case 'clean':
+        printHeader();
+        output("🧹 Triggering Vector Storage Auto-Cleanup...", C_YELLOW);
+        $storage = new StorageManager();
+        $res = $storage->checkAndPrune();
+        output("Status: " . ($res['status'] ?? 'ok'), C_GREEN);
+        output("Deleted inactive entities: " . ($res['deleted_count'] ?? 0), C_CYAN);
+        break;
+
+    case 'fetch-api':
+        printHeader();
+        if (empty($arg1)) {
+            output("Error: API URL required. Example: php bin/kira-cli fetch-api \"https://dummyjson.com/products/1\"", C_RED);
+            exit(1);
+        }
+        output("🔌 Fetching external API and caching in Zilliz DB: {$arg1}...", C_YELLOW);
+        $fetcher = new CloudFetcher();
+        $apiRes = $fetcher->fetchApi($arg1);
+        if ($apiRes['success']) {
+            output("✅ API Fetch Successful (HTTP {$apiRes['status_code']}) & cached to Zilliz!", C_GREEN . C_BOLD);
+            output(substr(json_encode($apiRes['data'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), 0, 800) . "\n...", C_CYAN);
+        } else {
+            output("❌ API fetch failed: " . ($apiRes['error'] ?? 'Unknown error'), C_RED);
+        }
+        break;
+
+    case 'leads':
+        printHeader();
+        output("📋 Fetching Customer Leads from Zilliz Cloud DB...", C_YELLOW);
+        $leadMgr = new LeadManager();
+        $leads = $leadMgr->getLeads(20);
+        if (empty($leads)) {
+            output("No leads found in cloud vector DB.", C_YELLOW);
+        } else {
+            output("Found " . count($leads) . " Leads:\n", C_GREEN . C_BOLD);
+            foreach ($leads as $i => $lead) {
+                output("[" . ($i + 1) . "] " . ($lead['text'] ?? 'Lead'), C_CYAN);
+                output("    URL: " . ($lead['url'] ?? 'N/A') . " | Time: " . date('Y-m-d H:i', $lead['created_at'] ?? time()));
+            }
+        }
+        break;
+
+    case 'logs':
+        printHeader();
+        output("🌐 Fetching Site Origin & Request Logs from Zilliz Cloud DB...", C_YELLOW);
+        $logger = new SiteLogger();
+        $logs = $logger->getRecentLogs(20);
+        if (empty($logs)) {
+            output("No site logs recorded in cloud vector DB yet.", C_YELLOW);
+        } else {
+            output("Recent 20 Cloud Activity Logs:\n", C_GREEN . C_BOLD);
+            foreach ($logs as $i => $lg) {
+                output("[" . ($i + 1) . "] " . ($lg['text'] ?? 'Log entry'), C_CYAN);
+            }
+        }
+        break;
+
+    case 'scan-project':
+        printHeader();
+        output("📂 Scanning Local Project Structure (Secure Sandboxed)...", C_YELLOW);
+        $auditor = new ProjectAuditor();
+        $scan = $auditor->scanStructure($arg1 ?: '');
+        if ($scan['success']) {
+            output("Project Root: " . $scan['project_root'], C_GREEN . C_BOLD);
+            output(json_encode($scan['tree'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), C_CYAN);
+        } else {
+            output("Scan failed: " . ($scan['error'] ?? 'Unknown'), C_RED);
+        }
+        break;
+
+    case 'read-file':
+        printHeader();
+        if (empty($arg1)) {
+            output("Error: Relative file path required. Example: php bin/kira-cli read-file \"public/products.json\"", C_RED);
+            exit(1);
+        }
+        output("📖 Reading project file: {$arg1}...", C_YELLOW);
+        $auditor = new ProjectAuditor();
+        $fileRes = $auditor->readFile($arg1);
+        if ($fileRes['success']) {
+            output("File: " . $fileRes['relative_path'] . " (" . round($fileRes['size_bytes'] / 1024, 1) . " KB)", C_GREEN . C_BOLD);
+            output("----------------------------------------------------------", C_CYAN);
+            output(substr($fileRes['content'], 0, 1200) . (strlen($fileRes['content']) > 1200 ? "\n... (truncated)" : ""));
+            output("----------------------------------------------------------", C_CYAN);
+        } else {
+            output("❌ " . ($fileRes['error'] ?? 'Error reading file'), C_RED);
+        }
+        break;
+
+    case 'auto-sync':
+        printHeader();
+        if (empty($arg1)) {
+            output("Error: URL required. Example: php bin/kira-cli auto-sync \"https://example.com\"", C_RED);
+            exit(1);
+        }
+        output("⚡ Auto-Syncing website knowledge into Zilliz Cloud DB: {$arg1}...", C_YELLOW);
+        require_once dirname(__DIR__) . '/vector/AutoSyncManager.php';
+        $syncMgr = new AutoSyncManager();
+        $res = $syncMgr->autoSync($arg1, true);
+        if ($res['success']) {
+            output("✅ " . $res['message'], C_GREEN . C_BOLD);
+            if (!empty($res['pages_crawled'])) {
+                output("   Pages Crawled: " . $res['pages_crawled'] . " | Chunks Indexed: " . $res['total_chunks_indexed'], C_CYAN);
+            }
+        } else {
+            output("❌ Sync failed: " . ($res['error'] ?? 'Unknown error'), C_RED);
+        }
+        break;
+
+    case 'help':
+    default:
+        printHeader();
+        output("Available Commands:", C_BOLD);
+        output("  php bin/kira-cli stats                      - Check Vector DB entity count & storage usage");
+        output("  php bin/kira-cli query \"<text>\"             - Search Zilliz Cloud vector memory");
+        output("  php bin/kira-cli scan \"<url>\"               - Scan & vectorize any webpage or store catalog");
+        output("  php bin/kira-cli auto-sync \"<url>\"          - Autonomous site/sitemap auto-vectorization");
+        output("  php bin/kira-cli create-page \"<title>\" \"<content>\" [category] - Create standalone HTML webpage");
+        output("  php bin/kira-cli extract \"<url>\"            - Deep scrape and extract key data from any website");
+        output("  php bin/kira-cli fetch-api \"<api-url>\"      - Live fetch external REST API & vectorize to Zilliz");
+        output("  php bin/kira-cli leads                      - View captured customer leads from Zilliz Cloud");
+        output("  php bin/kira-cli logs                       - View website origin logs from Zilliz Cloud");
+        output("  php bin/kira-cli scan-project [subdir]      - Inspect files & folders where chatbot is deployed");
+        output("  php bin/kira-cli read-file \"<rel-path>\"     - Safely view contents of allowed project files");
+        output("  php bin/kira-cli clean                      - Run storage pruner to free inactive vectors");
+        output("");
+        break;
+}
+

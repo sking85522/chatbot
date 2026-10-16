@@ -1,0 +1,538 @@
+:root {
+    --fk-blue: #2874f0;
+    --fk-blue-dark: #1259c7;
+    --fk-yellow: #ffe500;
+    --fk-orange: #fb641b;
+    --fk-green: #388e3c;
+    --fk-bg: #f1f3f6;
+    --fk-text: #212121;
+    --fk-text-muted: #878787;
+    --fk-border: #e0e0e0;
+    --fk-white: #ffffff;
+    --fk-card-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: var(--fk-bg);
+    color: var(--fk-text);
+    min-height: 100vh;
+}
+
+/* 1. TOP NAVBAR */
+.fk-header {
+    background-color: var(--fk-blue);
+    color: var(--fk-white);
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.fk-nav-container {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.fk-logo-wrap {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.fk-brand {
+    font-size: 20px;
+    font-weight: 800;
+    font-style: italic;
+    color: var(--fk-white);
+    letter-spacing: -0.5px;
+}
+
+.fk-sub-brand {
+    font-size: 11px;
+    font-style: italic;
+    color: var(--fk-text-muted);
+}
+
+.fk-sub-brand span {
+    color: var(--fk-yellow);
+    font-weight: bold;
+}
+
+.fk-search-box {
+    flex: 1;
+    position: relative;
+    max-width: 580px;
+}
+
+.fk-search-box input {
+    width: 100%;
+    padding: 10px 48px 10px 16px;
+    border-radius: 2px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.23);
+}
+
+.fk-search-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 44px;
+    background: transparent;
+    border: none;
+    color: var(--fk-blue);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.fk-nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.fk-login-btn {
+    background: var(--fk-white);
+    color: var(--fk-blue);
+    border: 1px solid #dbdbdb;
+    padding: 6px 32px;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.fk-login-btn:hover {
+    background: #f8f8f8;
+}
+
+.fk-cart-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--fk-white);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    position: relative;
+}
+
+.fk-cart-count {
+    background: var(--fk-orange);
+    color: var(--fk-white);
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+/* 2. CATEGORIES BAR */
+.fk-categories-bar {
+    background: var(--fk-white);
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.16);
+    margin-bottom: 10px;
+}
+
+.fk-categories-list {
+    max-width: 1240px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 16px;
+    overflow-x: auto;
+}
+
+.fk-cat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--fk-text);
+    font-size: 13px;
+    font-weight: 600;
+    gap: 6px;
+    cursor: pointer;
+    transition: color 0.15s;
+    white-space: nowrap;
+    padding: 4px 8px;
+}
+
+.fk-cat-item:hover, .fk-cat-item.active {
+    color: var(--fk-blue);
+}
+
+.fk-cat-icon {
+    font-size: 26px;
+}
+
+/* 3. HERO BANNER */
+.fk-hero-banner {
+    max-width: 1240px;
+    margin: 0 auto 12px;
+    padding: 0 16px;
+}
+
+.fk-banner-card {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: var(--fk-white);
+    border-radius: 4px;
+    padding: 32px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--fk-card-shadow);
+}
+
+.fk-banner-text h2 {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.fk-banner-text p {
+    font-size: 15px;
+    opacity: 0.9;
+    margin-bottom: 16px;
+}
+
+.fk-banner-btn {
+    background: var(--fk-yellow);
+    color: var(--fk-text);
+    padding: 10px 24px;
+    font-weight: 700;
+    border-radius: 2px;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 13px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* 4. MAIN CONTENT CONTAINER */
+.fk-container {
+    max-width: 1240px;
+    margin: 0 auto 30px;
+    padding: 0 16px;
+    display: flex;
+    gap: 16px;
+}
+
+/* Sidebar Filters */
+.fk-sidebar {
+    width: 260px;
+    background: var(--fk-white);
+    border-radius: 2px;
+    box-shadow: var(--fk-card-shadow);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: fit-content;
+}
+
+.fk-filter-title {
+    font-size: 16px;
+    font-weight: 700;
+    border-bottom: 1px solid var(--fk-border);
+    padding-bottom: 12px;
+}
+
+.fk-filter-group h4 {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    color: var(--fk-text-muted);
+}
+
+.fk-filter-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.fk-filter-option input {
+    cursor: pointer;
+}
+
+/* Products Section */
+.fk-products-area {
+    flex: 1;
+}
+
+.fk-section-header {
+    background: var(--fk-white);
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--fk-border);
+    border-radius: 2px 2px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fk-section-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.fk-section-header span {
+    font-size: 13px;
+    color: var(--fk-text-muted);
+}
+
+.fk-product-grid {
+    background: var(--fk-white);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 1px;
+    background-color: var(--fk-border);
+    box-shadow: var(--fk-card-shadow);
+    border-radius: 0 0 2px 2px;
+    overflow: hidden;
+}
+
+.fk-product-card {
+    background: var(--fk-white);
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+}
+
+.fk-product-card:hover {
+    box-shadow: 0 3px 16px 0 rgba(0,0,0,.11);
+    z-index: 2;
+    transform: translateY(-2px);
+}
+
+.fk-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: #388e3c;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 2px;
+}
+
+.fk-product-img {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    margin-bottom: 14px;
+    transition: transform 0.3s ease;
+}
+
+.fk-product-card:hover .fk-product-img {
+    transform: scale(1.05);
+}
+
+.fk-product-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--fk-text);
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.3;
+}
+
+.fk-rating-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.fk-rating-pill {
+    background: var(--fk-green);
+    color: var(--fk-white);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.fk-reviews-count {
+    font-size: 12px;
+    color: var(--fk-text-muted);
+}
+
+.fk-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.fk-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--fk-text);
+}
+
+.fk-mrp {
+    font-size: 13px;
+    color: var(--fk-text-muted);
+    text-decoration: line-through;
+}
+
+.fk-discount {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--fk-green);
+}
+
+.fk-add-cart-btn {
+    background: var(--fk-orange);
+    color: var(--fk-white);
+    border: none;
+    border-radius: 2px;
+    padding: 8px 12px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.15s;
+}
+
+.fk-add-cart-btn:hover {
+    background: #e65100;
+}
+
+/* 5. MODAL (Quick View & Cart) */
+.fk-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    backdrop-filter: blur(4px);
+}
+
+.fk-modal-content {
+    background: var(--fk-white);
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    border-radius: 4px;
+    overflow-y: auto;
+    position: relative;
+    padding: 24px;
+    animation: fk-zoom 0.2s ease-out;
+}
+
+@keyframes fk-zoom {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.fk-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: var(--fk-text-muted);
+}
+
+/* 6. FOOTER */
+.fk-footer {
+    background: #172337;
+    color: var(--fk-white);
+    padding: 36px 16px 20px;
+    margin-top: auto;
+}
+
+.fk-footer-container {
+    max-width: 1240px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    border-bottom: 1px solid #454d5e;
+    padding-bottom: 24px;
+}
+
+.fk-footer-col h5 {
+    color: #878787;
+    font-size: 12px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+
+.fk-footer-col a {
+    display: block;
+    color: var(--fk-white);
+    text-decoration: none;
+    font-size: 12px;
+    margin-bottom: 8px;
+    transition: color 0.15s;
+}
+
+.fk-footer-col a:hover {
+    color: var(--fk-blue);
+}
+
+.fk-footer-bottom {
+    max-width: 1240px;
+    margin: 20px auto 0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #878787;
+}
+
+@media (max-width: 768px) {
+    .fk-container {
+        flex-direction: column;
+    }
+    .fk-sidebar {
+        width: 100%;
+    }
+    .fk-banner-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+}
+

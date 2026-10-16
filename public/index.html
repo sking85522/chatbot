@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopKart - Online Shopping for Electronics, Fashion, Footwear & More</title>
+    <meta name="description" content="ShopKart Online Store: India's premier destination for Mobiles, Electronics, Men's and Women's Fashion, Footwear, Running Shoes, and Laptops with 100% genuine products, free delivery and easy returns.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛍️</text></svg>">
+</head>
+<body>
+
+    <!-- 1. FLIPKART STYLE TOP NAVBAR -->
+    <header class="fk-header">
+        <div class="fk-nav-container">
+            <a href="index.html" class="fk-logo-wrap">
+                <span class="fk-brand">ShopKart</span>
+                <span class="fk-sub-brand">Explore <span>Plus</span> ✨</span>
+            </a>
+
+            <div class="fk-search-box">
+                <input type="text" id="searchInput" placeholder="Search for products, brands (iPhone, Nike, Kurtas, Levi's, Sony)..." autocomplete="off">
+                <button class="fk-search-btn" onclick="filterProducts()">🔍</button>
+            </div>
+
+            <div class="fk-nav-actions">
+                <button class="fk-login-btn" onclick="alert('Login functionality: Enter mobile number or continue with OTP.')">Login</button>
+                <div class="fk-cart-btn" onclick="openCartModal()">
+                    <span>🛒 Cart</span>
+                    <span class="fk-cart-count" id="cartBadge">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. CATEGORIES NAVIGATION BAR -->
+    <nav class="fk-categories-bar">
+        <div class="fk-categories-list">
+            <a class="fk-cat-item active" onclick="filterCategory('all', this)">
+                <span class="fk-cat-icon">🏬</span>
+                <span>All Offers</span>
+            </a>
+            <a class="fk-cat-item" onclick="filterCategory('Electronics', this)">
+                <span class="fk-cat-icon">📱</span>
+                <span>Electronics</span>
+            </a>
+            <a class="fk-cat-item" onclick="filterCategory('Fashion', this)">
+                <span class="fk-cat-icon">👕</span>
+                <span>Fashion</span>
+            </a>
+            <a class="fk-cat-item" onclick="filterCategory('Footwear', this)">
+                <span class="fk-cat-icon">👟</span>
+                <span>Footwear</span>
+            </a>
+            <a class="fk-cat-item" onclick="filterCategory('Mobiles', this)">
+                <span class="fk-cat-icon">📲</span>
+                <span>Mobiles</span>
+            </a>
+            <a class="fk-cat-item" onclick="filterCategory('Laptops', this)">
+                <span class="fk-cat-icon">💻</span>
+                <span>Laptops</span>
+            </a>
+            <a class="fk-cat-item" onclick="filterCategory('Audio', this)">
+                <span class="fk-cat-icon">🎧</span>
+                <span>Audio</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- 3. HERO PROMOTIONAL BANNER -->
+    <section class="fk-hero-banner">
+        <div class="fk-banner-card">
+            <div class="fk-banner-text">
+                <h2>Big Saving Days Live! ⚡</h2>
+                <p>Up to 70% Off on Top Electronics, Trending Fashion & Running Shoes + Extra 10% Instant Bank Discount.</p>
+                <button class="fk-banner-btn" onclick="filterCategory('all')">Shop All Deals</button>
+            </div>
+            <div style="font-size: 70px;">
+                🎉🛍️🔥
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. MAIN PRODUCT CATALOG -->
+    <main class="fk-container">
+        <!-- Sidebar Filters -->
+        <aside class="fk-sidebar">
+            <div class="fk-filter-title">Filters</div>
+
+            <div class="fk-filter-group">
+                <h4>Categories</h4>
+                <div class="fk-filter-option" onclick="filterCategory('all')">
+                    <span>🏬 All Products</span>
+                </div>
+                <div class="fk-filter-option" onclick="filterCategory('Electronics')">
+                    <span>📱 Electronics & Gadgets</span>
+                </div>
+                <div class="fk-filter-option" onclick="filterCategory('Fashion')">
+                    <span>👕 Fashion & Clothing</span>
+                </div>
+                <div class="fk-filter-option" onclick="filterCategory('Footwear')">
+                    <span>👟 Shoes & Footwear</span>
+                </div>
+            </div>
+
+            <div class="fk-filter-group">
+                <h4>Brand</h4>
+                <div id="brandFilters"></div>
+            </div>
+
+            <div class="fk-filter-group">
+                <h4>Customer Ratings</h4>
+                <label class="fk-filter-option">
+                    <input type="radio" name="ratingFilter" value="4.5" onchange="filterProducts()">
+                    <span>4.5★ & above</span>
+                </label>
+                <label class="fk-filter-option">
+                    <input type="radio" name="ratingFilter" value="4.0" onchange="filterProducts()">
+                    <span>4.0★ & above</span>
+                </label>
+                <label class="fk-filter-option">
+                    <input type="radio" name="ratingFilter" value="0" checked onchange="filterProducts()">
+                    <span>All Ratings</span>
+                </label>
+            </div>
+
+            <div class="fk-filter-group">
+                <h4>Customer Support Hotline</h4>
+                <p style="font-size: 12px; color: #878787; line-height: 1.4;">
+                    Need help? Call 1800-SHOP-KART or ask <strong>HRITIK AI</strong> in the bottom right corner!
+                </p>
+            </div>
+        </aside>
+
+        <!-- Products Section -->
+        <section class="fk-products-area">
+            <div class="fk-section-header">
+                <h3 id="categoryHeading">All Products</h3>
+                <span id="productCount">Loading catalog...</span>
+            </div>
+            <div class="fk-product-grid" id="productGrid"></div>
+        </section>
+    </main>
+
+    <!-- 5. QUICK VIEW PRODUCT MODAL -->
+    <div class="fk-modal-overlay" id="quickViewModal">
+        <div class="fk-modal-content">
+            <button class="fk-modal-close" onclick="closeModal('quickViewModal')">&times;</button>
+            <div id="quickViewBody"></div>
+        </div>
+    </div>
+
+    <!-- 6. SHOPPING CART MODAL -->
+    <div class="fk-modal-overlay" id="cartModal">
+        <div class="fk-modal-content" style="max-width: 550px;">
+            <button class="fk-modal-close" onclick="closeModal('cartModal')">&times;</button>
+            <h3 style="font-size: 18px; font-weight: 700; border-bottom: 1px solid #e0e0e0; padding-bottom: 12px;">My Shopping Cart</h3>
+            <div id="cartItemsList" style="max-height: 380px; overflow-y: auto;"></div>
+            <div style="margin-top: 16px; border-top: 1px solid #e0e0e0; padding-top: 14px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <span style="font-size: 12px; color: #878787;">Total Payable:</span>
+                    <div id="cartTotalAmount" style="font-size: 20px; font-weight: 800; color: #212121;">₹0</div>
+                </div>
+                <button class="fk-add-cart-btn" style="width: auto; padding: 12px 28px; background: #fb641b; font-size: 14px;" onclick="checkoutOrder()">Place Order</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. FLIPKART STYLE FOOTER -->
+    <footer class="fk-footer">
+        <div class="fk-footer-container">
+            <div class="fk-footer-col">
+                <h5>ABOUT</h5>
+                <a href="#">Contact Us</a>
+                <a href="#">About ShopKart</a>
+                <a href="#">Careers</a>
+                <a href="#">ShopKart Stories</a>
+                <a href="#">Corporate Information</a>
+            </div>
+            <div class="fk-footer-col">
+                <h5>HELP</h5>
+                <a href="#">Payments</a>
+                <a href="#">Shipping & Delivery</a>
+                <a href="#">Cancellation & Returns</a>
+                <a href="#">FAQ & Customer Care</a>
+            </div>
+            <div class="fk-footer-col">
+                <h5>CONSUMER POLICY</h5>
+                <a href="#">Cancellation & Returns</a>
+                <a href="#">Terms Of Use</a>
+                <a href="#">Security</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Sitemap</a>
+            </div>
+            <div class="fk-footer-col">
+                <h5>MAIL US</h5>
+                <p style="font-size: 12px; line-height: 1.6; color: #fff;">
+                    ShopKart Internet Private Limited,<br>
+                    Buildings Alyssa, Begonia & Clove Embassy Tech Village,<br>
+                    Outer Ring Road, Bengaluru, 560103, Karnataka, India
+                </p>
+            </div>
+        </div>
+        <div class="fk-footer-bottom">
+            <span>&copy; 2026 ShopKart.com. All rights reserved.</span>
+            <span>⚡ Powered by HRITIK AI & Zilliz Vector Cloud</span>
+        </div>
+    </footer>
+
+    <!-- App Logic -->
+    <script src="app.js"></script>
+
+    <!-- 1-Line HRITIK AI & Zilliz Vector DB Embeddable Widget -->
+    <script src="widget.js" 
+            data-api="/api.php" 
+            data-title="HRITIK AI" 
+            data-subtitle="ShopKart Smart Shopping Assistant • Online" 
+            data-color="#2874f0" 
+            data-greeting="Namaste! Main HRITIK AI hoon, aapka personal shopping assistant. Aaj main aapki kya madad kar sakta hoon? / Hello! I am HRITIK AI. How can I help you find the best deals today?"></script>
+
+</body>
+</html>
+
